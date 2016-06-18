@@ -51,18 +51,20 @@ function createEngine(engineOptions) {
 			// Transpiled ES6 may export components as { default: Component }
 			viewParts = viewParts.default || viewParts;
 
-			var req = options.req;
-			var store = viewParts.getStore(req.options);
+			var locals = options.req.locals;
+			var store = viewParts.getStore(locals);
 			var ViewComponent = viewParts.Component;
+
+			console.log('YOOO');
 
 			resultMarkup = engineOptions.doctype;
 			var componentMarkup = ReactDOMServer.renderToString(React.createElement(Provider, {
 				store: store
 			}, React.createElement(ViewComponent)));
 
-			resultMarkup += viewParts.pre(req.options, store);
+			resultMarkup += viewParts.pre(locals, store);
 			resultMarkup += componentMarkup;
-			resultMarkup += viewParts.post(req.options, store);
+			resultMarkup += viewParts.post(locals, store);
 		} catch (e) {
 			return cb(e);
 		} finally {
