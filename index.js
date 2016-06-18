@@ -9,6 +9,7 @@
 
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
+var Provider = require('react-redux').Provider;
 var beautifyHTML = require('js-beautify').html;
 var assign = require('object-assign');
 var _escaperegexp = require('lodash.escaperegexp');
@@ -43,15 +44,26 @@ function createEngine(engineOptions) {
 			registered = true;
 		}
 
+		var resultMarkup;
+
 		try {
-			var markup = engineOptions.doctype;
-			var componentParts = require(filename);
+			var viewParts = require(filename);
 			// Transpiled ES6 may export components as { default: Component }
-			componentParts = componentParts.default || componentParts;
-			markup += componentParts.pre(options);
-			//   markup += ReactDOMServer.renderToStaticMarkup(
-			markup += ReactDOMServer.renderToString(React.createElement(componentParts.main, options));
-			markup += componentParts.post(options);
+			viewParts = viewParts.default || viewParts;
+
+			var store = viewParts.getStore(options);
+			var ViewComponent = viewParts.Component;
+			console.log('ViewComponent', ViewComponent);
+
+			resultMarkup = engineOptions.doctype;
+			var componentMarkup = ReactDOMServer.renderToString(React.createElement(Provider, {
+				store: store
+			}, React.createElement(ViewComponent)));
+			// }, React.Children.only(ViewComponent)));
+
+			resultMarkup += viewParts.pre(options, store);
+			resultMarkup += componentMarkup;
+			resultMarkup += viewParts.post(options, store);
 		} catch (e) {
 			return cb(e);
 		} finally {
@@ -68,10 +80,10 @@ function createEngine(engineOptions) {
 		if (engineOptions.beautify) {
 			// NOTE: This will screw up some things where whitespace is important, and be
 			// subtly different than prod.
-			markup = beautifyHTML(markup);
+			resultMarkup = beautifyHTML(resultMarkup);
 		}
 
-		cb(null, markup);
+		cb(null, resultMarkup);
 	}
 
 	return renderFile;
