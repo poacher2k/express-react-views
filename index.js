@@ -55,7 +55,6 @@ function createEngine(engineOptions) {
 			var store = viewParts.getStore(locals);
 			var ViewComponent = viewParts.Component;
 
-			console.log('YOOO');
 
 			resultMarkup = engineOptions.doctype;
 			var componentMarkup = ReactDOMServer.renderToString(React.createElement(Provider, {
