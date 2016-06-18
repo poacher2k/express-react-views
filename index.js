@@ -52,18 +52,17 @@ function createEngine(engineOptions) {
 			viewParts = viewParts.default || viewParts;
 
 			var req = options.req;
-			var store = viewParts.getStore(req);
+			var store = viewParts.getStore(req.options);
 			var ViewComponent = viewParts.Component;
 
 			resultMarkup = engineOptions.doctype;
 			var componentMarkup = ReactDOMServer.renderToString(React.createElement(Provider, {
 				store: store
 			}, React.createElement(ViewComponent)));
-			// }, React.Children.only(ViewComponent)));
 
-			resultMarkup += viewParts.pre(req, store);
+			resultMarkup += viewParts.pre(req.options, store);
 			resultMarkup += componentMarkup;
-			resultMarkup += viewParts.post(req, store);
+			resultMarkup += viewParts.post(req.options, store);
 		} catch (e) {
 			return cb(e);
 		} finally {
