@@ -1,6 +1,6 @@
 # express-react-views
 
-This is an [Express][express] view engine which renders [React][react] components on server. It renders static markup and *does not* support mounting those views on the client.
+This is an [Express][express] view engine which renders [React][react] components on server. It renders static markup and *does indeed* support mounting those views on the client.
 
 This is intended to be used as a replacement for existing server-side view solutions, like [jade][jade], [ejs][ejs], or [handlebars][hbs].
 
