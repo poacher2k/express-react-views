@@ -42,6 +42,8 @@ function createEngine(engineOptions) {
 				only: options.settings.views
 			}, engineOptions.babel));
 			registered = true;
+			require.extensions['.scss'] = function () {};
+			require.extensions['.css'] = function () {};
 		}
 
 		var resultMarkup;
